@@ -1,5 +1,7 @@
-const cors = require('cors')
-const express = require('express')
+// const cors = require('cors')
+import cors from 'cors'
+import express from 'express'
+
 require('dotenv').config()
 const routes = require('./src/routes')
 
