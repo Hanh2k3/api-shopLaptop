@@ -1,6 +1,7 @@
 // const cors = require('cors')
 import cors from 'cors'
 import express from 'express'
+import bodyParser from 'body-parser'
 
 require('dotenv').config()
 const routes = require('./src/routes')
@@ -15,7 +16,8 @@ app.use(cors({
 
 // middleware 
 app.use(express.json()) // get Data type Json
-app.use(express.urlencoded({extended: true})) // convert data into Json
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
 
 // set Route 
 routes(app)

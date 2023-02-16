@@ -2,9 +2,10 @@ import * as services from '../services'
 
 export const register = async (req, res) => {
     try {
-        const result = await services.register()
+        const { email, password } = req.body
+       // const result = await services.register(email, password)
         res.status(200).json({
-            result: result
+            result: 'true'
         })
     } catch (error) {
      
