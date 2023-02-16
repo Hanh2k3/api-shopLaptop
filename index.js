@@ -17,7 +17,7 @@ app.use(cors({
 // middleware 
 app.use(express.json()) // get Data type Json
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 
 // set Route 
 routes(app)

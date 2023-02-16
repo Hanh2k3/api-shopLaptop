@@ -2,12 +2,13 @@ import * as services from '../services'
 
 export const register = async (req, res) => {
     try {
-        const { email, password } = req.body
-       // const result = await services.register(email, password)
-        res.status(200).json({
-            result: 'true'
+        const data = req.body
+        const { token } = await services.register(data)
+        res.setHeader('Authorization', token )
+        return res.status(200).json({
+            message: 'Register successfully'
         })
     } catch (error) {
-     
+        Error(error)
     }
 }
