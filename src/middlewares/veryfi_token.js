@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const passport = require('passport')
 const JwtStrategy = require('passport-jwt').Strategy
 const ExtractJwt = require('passport-jwt').ExtractJwt
+const GooglePlusTokenStrategy = require('passport-google-plus-token');
 const db = require('../models/index')
 
 // passport config toke JwtStrategy
@@ -31,4 +32,23 @@ export const verifyToken = (req, res, next) => {
     }  
 }
 
+
+// passport middleware with google get token data from token of google account
+passport.use(new GooglePlusTokenStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+}, (accessToken,  refreshToken, profile, next) => {
+    try {
+        const user = {
+            name: profile.displayName,
+            type_account: 'Google',
+            provider_id: profile.id,
+            email: profile.emails[0].value
+        }
+        next(null, user)
+    } catch (error) {
+        next(error, false)
+    }
+   
+}))
 module.exports = passport
