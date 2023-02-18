@@ -1,6 +1,6 @@
-import db from '../models'
-import bcryptjs from 'bcryptjs'
-import jwt from 'jsonwebtoken'
+const db = require('../models')
+const bcryptjs = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 const hashPassword = (password) => {
     const salt = bcryptjs.genSaltSync(10);
@@ -9,8 +9,7 @@ const hashPassword = (password) => {
 }
 
 export const register = (data) => new Promise( async (resolve, reject)  => {
-    try {  
-        console.log(data)   
+    try {    
         const newUser = await db.User.create({
             name: data.name,
             email: data.email,
@@ -22,7 +21,6 @@ export const register = (data) => new Promise( async (resolve, reject)  => {
                                 user_id: dataValues.id,
                                 role_id:dataValues.role_di
                             }, process.env.JWT_SECRET, { expiresIn: '1d' })
-        console.log(token)
         resolve( {
             token: 'Bearer ' + token
         })

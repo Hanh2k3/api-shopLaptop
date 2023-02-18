@@ -1,4 +1,4 @@
-import * as services from '../services'
+const services = require('../services')
 
 export const register = async (req, res) => {
     try {
@@ -11,4 +11,11 @@ export const register = async (req, res) => {
     } catch (error) {
         Error(error)
     }
+}
+
+export const testJwt = async (req, res) => {
+    console.log(req.user)
+    return res.json({
+        user: req.user
+    })
 }
