@@ -32,17 +32,18 @@ export const verifyToken = (req, res, next) => {
     }  
 }
 
-
 // passport middleware with google get token data from token of google account
 passport.use(new GooglePlusTokenStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 }, (accessToken,  refreshToken, profile, next) => {
+
     try {
+        console.log('profile',profile.id)
         const user = {
             name: profile.displayName,
             type_account: 'Google',
-            provider_id: profile.id,
+            provider_id:  profile.id,
             email: profile.emails[0].value
         }
         next(null, user)

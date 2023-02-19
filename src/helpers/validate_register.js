@@ -6,10 +6,16 @@ const validate = async  (req, res, next) => {
         const isUnique = await db.User.findOne({where: {email: req.body.email}})
         console.log('error', error)
         if(error) {
-           res.status(400).json({error: error.message})
+           res.status(400).json({
+            error: error.message,
+            status : 0 
+        })
         } else {
             if(isUnique) {
-                res.status(404).json({  message: "Email is exit" })
+                res.status(404).json({  
+                    message: "Email is exit", 
+                    status : 0 
+                })
             } else  next()
         }
     } catch (error) {
@@ -20,7 +26,7 @@ const validate = async  (req, res, next) => {
 
 const schema = joi.object({
     name: joi.string().required(),
-    password: joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+    password: joi.string().pattern(new RegExp('^[a-zA-Z0-9]{6,30}$')).required(),
     email: joi.string().email(), 
     repeat_password: joi.ref('password')
 })

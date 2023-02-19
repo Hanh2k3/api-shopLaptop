@@ -1,16 +1,16 @@
-import e from 'express';
+
 
 const db = require('../models')
 const bcryptjs = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const hashPassword = (password) => {
-    const salt = bcryptjs.genSaltSync(10);
+    const salt = bcryptjs.genSaltSync(10)
     const hash = bcryptjs.hashSync(password, salt)
     return hash
 }
 
-const encodeToken = async (data) => {
+export const encodeToken = async (data) => {
     try {
         const token = await jwt.sign({
                     user_id: data.id,
@@ -40,16 +40,54 @@ export const register = (data) => new Promise( async (resolve, reject)  => {
     }
 })
 
+export const login = async (email, password) => {
+    try {
+        const user = await db.User.findOne({ where: {email: email} })
+        if(user!=null) {
+            const { dataValues } = user
+            const isPassword = bcryptjs.compareSync(password, dataValues.password)
+            console.log('isPassword', isPassword)
+            if(isPassword) {
+                const token = await encodeToken(user)
+                return token
+            } else return false
+
+        } else {
+            return false
+        }
+        
+    } catch (error) {
+        
+    }
+}
+
 // update account into google 
-export const updateAccountGoogle = (user) =>  {
+export const updateAccount = async (user_id, provider_id, type_account) =>  {
+    try {
+        const updateUser = await db.User.update({
+            provider_id: provider_id,
+            type_account: type_account,
+        },{
+            where : {
+                id : user_id
+            }
+        })
+        const data = {
+            id : user_id,
+            role_di: 2
+        }
+        const token = await encodeToken(data)
+        return token
+    } catch (error) {
+        
+    }
+
 
     
-
-
 }
 
 export const  createAccountSocial =  async (user) => {
-    try {
+    try {   
         const newUser = await db.User.create({
             name: user.name,
             email: user.email,
@@ -57,11 +95,12 @@ export const  createAccountSocial =  async (user) => {
             provider_id: user.provider_id, 
             type_account: user.type_account
         })
-        console.log('newUser',newUser)
         const { dataValues } = newUser
+        console.log('dataValues', dataValues)
         const token = await encodeToken(dataValues)
         return token 
     } catch (error) {
         
     }
 }
+

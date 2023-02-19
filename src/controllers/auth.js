@@ -8,9 +8,7 @@ const isOldUser = async (user) => {
                 provider_id : user.provider_id
             }
         })
-        
-        if(check == null) return false
-        else return true     
+       return check 
     } catch (error) {
         
     }
@@ -18,10 +16,16 @@ const isOldUser = async (user) => {
 
 const isEmailExit = async (email) => {
     try {
-        const check = await db.User.findOne({ where: { email: email}})
-        
-        if(check != null) return true
-        return false 
+        const user = await db.User.findOne({ where: { email: email}})
+       
+        if(user == null) {
+            return 0 
+
+        } else {
+            const { dataValues } = user
+            return dataValues.id
+        }
+      
     } catch (error) {
         
     }
@@ -33,9 +37,29 @@ const register = async (req, res) => {
         const { token } = await authService.register(data)
         res.setHeader('Authorization', token )
         return res.status(200).json({
-            message: 'Register successfully'
+            message: 'Register successfully',
+            status : 1
+        })   
+}
+
+const login = async (req, res) => {
+
+    const { email, password } = req.body 
+
+    const token = await authService.login(email, password)
+    if(!token) {
+        return res.status(401).json({
+            status: 0, 
+            error: 'Email or password invalid'
         })
-    
+    } else {
+        res.setHeader('Authorization', token)
+        return res.status(200).json({
+            status: 1, 
+            message: 'Login success'
+        })
+    }
+  
 }
 
 const loginGoogle = async (req, res) => {
@@ -44,21 +68,33 @@ const loginGoogle = async (req, res) => {
 
     // find user  
     const checkUser = await isOldUser(user)
-    if(checkUser) {
-        // update account into google    
+    console.log(checkUser)
+    if(checkUser != null ) {
+        // login when account exit 
+        const { dataValues} = checkUser
+        const token = await authService.encodeToken(dataValues)
+        res.setHeader('Authorization', token) 
     } else {
-        // create new account
-        const token = await authService.createAccountSocial(user)
-        res.setHeader('Authorization', token)
-    }    
-    
+        // check email is used create account 
+        const user_id = await isEmailExit(user.email)
+        console.log('user_id', user_id)
+        if(user_id == 0 ) {
+           
+            const token = await authService.createAccountSocial(user)
+            res.setHeader('Authorization', token) 
+
+        } else {
+            // update account into google
+            const token = await authService.updateAccount(user_id, user.provider_id, 'Google')
+            res.setHeader('Authorization', token)
+        }
+    }     
     return res.status(200).json({
-        message: 'Login successfully'
+        message: 'Login successfully',
+        status : 1
     })
 
 }
-
-
 
 const testJwt = async (req, res) => {
     console.log(req.user)
@@ -70,6 +106,7 @@ const testJwt = async (req, res) => {
 module.exports = {
     register, 
     testJwt,
-    loginGoogle
+    loginGoogle,
+    login
     
 }
