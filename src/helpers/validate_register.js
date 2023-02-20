@@ -4,7 +4,6 @@ const validate = async  (req, res, next) => {
     try {
         const { error } = schema.validate(req.body)
         const isUnique = await db.User.findOne({where: {email: req.body.email}})
-        console.log('error', error)
         if(error) {
            res.status(400).json({
             error: error.message,

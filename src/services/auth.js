@@ -24,6 +24,7 @@ export const encodeToken = async (data) => {
 
 export const register = (data) => new Promise( async (resolve, reject)  => {
     try {    
+    
         const newUser = await db.User.create({
             name: data.name,
             email: data.email,
@@ -46,7 +47,6 @@ export const login = async (email, password) => {
         if(user!=null) {
             const { dataValues } = user
             const isPassword = bcryptjs.compareSync(password, dataValues.password)
-            console.log('isPassword', isPassword)
             if(isPassword) {
                 const token = await encodeToken(user)
                 return token
@@ -80,10 +80,7 @@ export const updateAccount = async (user_id, provider_id, type_account) =>  {
         return token
     } catch (error) {
         
-    }
-
-
-    
+    }    
 }
 
 export const  createAccountSocial =  async (user) => {
@@ -96,7 +93,7 @@ export const  createAccountSocial =  async (user) => {
             type_account: user.type_account
         })
         const { dataValues } = newUser
-        console.log('dataValues', dataValues)
+       
         const token = await encodeToken(dataValues)
         return token 
     } catch (error) {

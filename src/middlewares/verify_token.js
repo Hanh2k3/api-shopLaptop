@@ -3,7 +3,11 @@ const passport = require('passport')
 const JwtStrategy = require('passport-jwt').Strategy
 const ExtractJwt = require('passport-jwt').ExtractJwt
 const GooglePlusTokenStrategy = require('passport-google-plus-token');
+const FacebookTokenStrategy = require('passport-facebook-token');
 const db = require('../models/index')
+const { notAuth } = require('./handle_errors')
+const { getOne } = require('../services/user')
+
 
 // passport config toke JwtStrategy
 passport.use(new JwtStrategy({
@@ -12,7 +16,9 @@ passport.use(new JwtStrategy({
 }, async (jwt_payload, done) => {
     try {
         const id = jwt_payload.user_id 
-        const user = await db.User.findOne({ where: { id: id}})
+        //const user = await db.User.findOne({ where: { id: id}})
+        const user = await getOne(id) 
+        console.log('user in verify',user)
         if(user) done(null, user) 
         else done(null, false)
     } catch (error) {
@@ -48,8 +54,25 @@ passport.use(new GooglePlusTokenStrategy({
         }
         next(null, user)
     } catch (error) {
-        next(error, false)
+        notAuth("Token invalid")
     }
    
 }))
+
+// Passport use FacebookToken Strategy
+// passport.use(new FacebookTokenStrategy({
+//     clientID: process.env.FACEBOOK_CLIENT_ID,
+//     clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+
+// }, (accessToken, refreshToken, profile, done) => {
+
+//     try {
+//         console.log(profile)
+        
+//     } catch (error) {
+//         done(null, error)
+//     }
+
+// }))
+
 module.exports = passport
