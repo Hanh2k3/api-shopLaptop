@@ -4,6 +4,8 @@ const validateRegister = require("../helpers/validate_register")
 const validateLogin = require("../helpers/validate_login")
 const passport = require("../middlewares/verify_token")
 const router = require("express-promise-router")()
+const checkAuthorization = require("../middlewares/isHasAuthorization")
+const isAdmin= require("../middlewares/verify_role")
 
 
 // ROUTE PUBLIC 
@@ -18,8 +20,16 @@ router.route("/google")
 
 
 // ROUTE PRIVATE
+router.use(checkAuthorization)
 router.use(passport.authenticate("jwt", { session: false }))      
+
+
+router.use(isAdmin.isAdmin)
 router.route("/testJWT")
       .get(authController.testJwt)
-     
+router.route("/checkRole")
+      .get((req, res) => {
+            res.send("true verify role")
+      })
+
 module.exports = router

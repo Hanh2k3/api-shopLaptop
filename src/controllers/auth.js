@@ -55,15 +55,15 @@ const login = async (req, res) => {
         const token = await authService.login(email, password)
         if(!token) {
         return res.status(401).json({
-            status: 0, 
-            error: 'Email or password invalid'
-        })
+                status: 0, 
+                error: 'Email or password invalid'
+            })
         } else {
-        res.setHeader('Authorization', token)
-        return res.status(200).json({
-            status: 1, 
-            message: 'Login success'
-        })
+            res.setHeader('Authorization', token)
+            return res.status(200).json({
+                status: 1, 
+                message: 'Login success'
+                })
         }
         
     } catch (error) {
@@ -87,7 +87,6 @@ const loginGoogle = async (req, res) => {
             const user_id = await isEmailExit(user.email)
 
             if(user_id == 0 ) {
-            
                 const token = await authService.createAccountSocial(user)
                 res.setHeader('Authorization', token) 
 

@@ -18,7 +18,6 @@ passport.use(new JwtStrategy({
         const id = jwt_payload.user_id 
         //const user = await db.User.findOne({ where: { id: id}})
         const user = await getOne(id) 
-        console.log('user in verify',user)
         if(user) done(null, user) 
         else done(null, false)
     } catch (error) {
@@ -31,7 +30,6 @@ export const verifyToken = (req, res, next) => {
     try {      
        const header = JSON.stringify(req.headers)
        const token = JSON.parse(header).authorization
-       console.log(token)
        const decode = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET)       
     } catch (error) {  
         throw new Error(error.message)
@@ -45,7 +43,7 @@ passport.use(new GooglePlusTokenStrategy({
 }, (accessToken,  refreshToken, profile, next) => {
 
     try {
-        console.log('profile',profile.id)
+        
         const user = {
             name: profile.displayName,
             type_account: 'Google',
@@ -58,6 +56,8 @@ passport.use(new GooglePlusTokenStrategy({
     }
    
 }))
+
+
 
 // Passport use FacebookToken Strategy
 // passport.use(new FacebookTokenStrategy({
