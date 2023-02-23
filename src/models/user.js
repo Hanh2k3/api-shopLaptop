@@ -20,12 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING,
     role_id: {
       type: DataTypes.INTEGER, 
-      references : {
-        table: ''
-      }
-    }
-
-      ,
+    },
     type_account : DataTypes.STRING,
     provider_id: DataTypes.STRING, 
   }, {

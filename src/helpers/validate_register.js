@@ -1,9 +1,13 @@
-import joi from 'joi'
-import db from '../models'
+
+const joi = require('joi')
+const db = require('../models')
+const handleError = require('../middlewares/handle_errors') 
+
 const validate = async  (req, res, next) => {
     try {
         const { error } = schema.validate(req.body)
         const isUnique = await db.User.findOne({where: {email: req.body.email}})
+        console.log(isUnique)
         if(error) {
            res.status(400).json({
             error: error.message,
@@ -18,7 +22,7 @@ const validate = async  (req, res, next) => {
             } else  next()
         }
     } catch (error) {
-        next(error) 
+        handleError.internalServerError(res, error)
     }
     
 }

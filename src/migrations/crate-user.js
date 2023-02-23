@@ -19,6 +19,11 @@ module.exports = {
         allowNull: false,
         unique: true
       },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false
+
+      },
       role_id: {
         type: Sequelize.INTEGER,
         allowNull: false
@@ -45,41 +50,9 @@ module.exports = {
       }
     });
 
-    await queryInterface.createTable('roles', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-      value: {
-        type: Sequelize.STRING,
-        allowNull: false
-
-      },
-      name_role: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-
-    });
-
-    await queryInterface.addConstraint('users', {
-      fields: ['role_id'],
-      type: 'foreign key',
-      name: 'user_fkey_constraint_name',
-      references : {
-        table: 'roles', 
-        field: 'id'
-      },
-
-      onDelete: 'cascade',
-      onUpdate: 'cascade'
-
-    })
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('users');
-    await queryInterface.dropTable('roles');
+    
   }
 };

@@ -14,12 +14,12 @@ module.exports = (sequelize, DataTypes) => {
       
     }
   }
-  Role.init({
+  Category.init({
     category_name: DataTypes.STRING,
-    status: DataTypes.INT
+    status: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Role',
+    modelName: 'Category',
   })
-  return Role
+  return Category
 }

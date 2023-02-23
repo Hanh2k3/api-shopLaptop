@@ -2,37 +2,15 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Laptops', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
+    await queryInterface.createTable('CategoryLaptops', {
+      category_id: {
+        allowNull: false,  
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      
-      laptop_name : {
+      laptop_id: {
         allowNull: false,
-        type: Sequelize.STRING
-      },
-      qty : {
-        allowNull: false,
-        type: Sequelize.INTEGER
-      },
-      price : {
-        allowNull: false,
-        type: Sequelize.FLOAT
-      },
-      status : {
-        allowNull: false,
-        type: Sequelize.INTEGER
-      },
-      brand_id : {
-        allowNull: false,
-        type: Sequelize.INTEGER
-
-      },
-      detail_id : {
-        allowNull: false,
+        primaryKey: true,
         type: Sequelize.INTEGER
       },
       createdAt: {
@@ -49,24 +27,24 @@ module.exports = {
       }
     });
 
-    await queryInterface.addConstraint('laptops', {
-        fields: ['brand_id'],
+    await queryInterface.addConstraint('categorylaptops', {
+        fields: ['category_id'],
         type: 'foreign key',
-        name: 'laptops_fkey__brand',
+        name: 'category_fkey__categoryLaptop',
         references : {
-          table: 'brands', 
+          table: 'categories', 
           field: 'id'
         },
         onDelete: 'cascade',
         onUpdate: 'cascade'
   
     })
-    await queryInterface.addConstraint('laptops', {
-        fields: ['detail_id'],
+    await queryInterface.addConstraint('categorylaptops', {
+        fields: ['laptop_id'],
         type: 'foreign key',
-        name: 'laptop_fkey_constraint_detail',
+        name: 'categorylaptops_fkey_laptop',
         references : {
-          table: 'detaillaptops', 
+          table: 'laptops', 
           field: 'id'
         },
         onDelete: 'cascade',
@@ -74,6 +52,6 @@ module.exports = {
     })
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('DetailLaptops');
+    await queryInterface.dropTable('CategoryLaptops');
   }
 };

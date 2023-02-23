@@ -8,8 +8,8 @@ const badRequest = (err, res) => {
     })
 }
 
-export const internalServerError = (res) => {
-    const error = createError.InternalServerError()
+export const internalServerError = (res, err) => {
+    const error = createError.InternalServerError(err)
     return res.status(error.status).json({
         status: 0,
         message: error.message 

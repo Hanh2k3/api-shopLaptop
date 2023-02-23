@@ -11,20 +11,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      
+
       
     }
   }
-  Role.init({
+  Laptop.init({
     laptop_name: DataTypes.STRING,
-    qty: DataTypes.INT,
+    qty: DataTypes.INTEGER,
     price: DataTypes.FLOAT,
-    status: DataTypes.INT,
-    brand_id: DataTypes.INT,
-    detail_id: DataTypes.INT,
+    status: DataTypes.INTEGER,
+    brand_id: DataTypes.INTEGER,
+    detail_id: DataTypes.INTEGER,
   }, {
     sequelize,
-    modelName: 'Role',
+    modelName: 'Laptop',
   })
-  return Role
+  return Laptop
 }

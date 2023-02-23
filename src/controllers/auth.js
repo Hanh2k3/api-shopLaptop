@@ -35,6 +35,7 @@ const isEmailExit = async (email) => {
 const register = async (req, res) => {
     try {
         const data = req.body
+        
         const { token } = await authService.register(data)
         res.setHeader('Authorization', token )
         return res.status(200).json({
@@ -42,7 +43,7 @@ const register = async (req, res) => {
             status : 1
         })     
     } catch (error) {
-        return internalServerError(res)
+        return internalServerError(res, error)
     }
 
         
