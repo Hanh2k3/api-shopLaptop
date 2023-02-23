@@ -26,8 +26,7 @@ const isEmailExit = async (email) => {
         } else {
             const { dataValues } = user
             return dataValues.id
-        }
-      
+        }  
     } catch (error) {
         
     }
