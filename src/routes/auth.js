@@ -22,8 +22,6 @@ router.route("/google")
 // ROUTE PRIVATE
 router.use(checkAuthorization)
 router.use(passport.authenticate("jwt", { session: false }))      
-
-
 router.use(isAdmin.isAdmin)
 router.route("/testJWT")
       .get(authController.testJwt)
