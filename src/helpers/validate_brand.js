@@ -3,17 +3,17 @@ const db = require('../models')
 const handleError = require('../middlewares/handle_errors')
 
 
-const isCategoryExit = async (category_name, res) =>  {
+const isBrandExit = async (brand_name, res) =>  {
     try {
-        const category = await db.Category.findOne({ where : { category_name } })
-        if(category === null ) {
+        const brand = await db.Brand.findOne({ where : { brand_name } })
+        if(brand === null ) {
             return false
         } else return true
     } catch (error) {
         handleError.badRequest(error, res)
     }
 }
-const validateCategory = async (req, res, next) => {
+const validateBrand = async (req, res, next) => {
     const { error } = schema.validate(req.body)
     if(error){
         res.status(400).json({ 
@@ -21,19 +21,19 @@ const validateCategory = async (req, res, next) => {
             status : 0 
         })
     } else {
-        const checkExit = await isCategoryExit(req.body.category_name, res)
+        const checkExit = await isBrandExit(req.body.brand_name, res)
         console.log('check exit', checkExit)
         if(!checkExit) next()
         else return res.status(401).json({
-            error: `${req.body.category_name} is exit`, 
+            error: `${req.body.brand_name} is exit`, 
             status: 0
         })
     } 
 }
 
 const schema = joi.object({
-    category_name: joi.string().required(),
+    brand_name: joi.string().required(),
     status: joi.number().integer().required()
 })
 
-module.exports = validateCategory
+module.exports = validateBrand

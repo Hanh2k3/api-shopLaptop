@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     laptop_id: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Category',
+    modelName: 'CategoryLaptop',
   })
   return CategoryLaptop
 }

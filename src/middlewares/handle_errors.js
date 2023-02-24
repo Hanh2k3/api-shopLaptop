@@ -1,7 +1,7 @@
 const createError = require('http-errors')
 
-const badRequest = (err, res) => {
-    const error = createError.badRequest(err)
+export const badRequest = (err, res) => {
+    const error = createError.BadRequest(err)
     return res.status(error.status).json({ 
         status: 0,
         message: err.message
