@@ -3,51 +3,55 @@ const db = require('../models')
 const handleError = require('../middlewares/handle_errors')
 
 
-const isLaptopExit = async (laptop_name, res) =>  {
-    try {
-        const laptop = await db.laptop.findOne({ where : { laptop_name } })
-        if(laptop === null ) {
-            return false
-        } else return true
-    } catch (error) {
-        handleError.badRequest(error, res)
-    }
-}
 const validateLaptop = async (req, res, next) => {
-    const { error } = schema.validate(req.body)
-    if(error){
+    const { error } = schemaLaptop.validate(req.body.laptop)
+    const detail_laptop = schemaDetailLaptop.validate(req.body.detail_laptop)
+    const error_detailLaptop = detail_laptop.error
+    
+    const category = schemaCategory.validate(req.body.category_id)
+    const error_category = category.error
+    if(error || error_detailLaptop || error_category){
         res.status(400).json({ 
-            error: error.message,
+            error: error === undefined ? "no error laptop": error.message,
+            error_detailLaptop: error_detailLaptop === undefined ? "no error detail laptop" : error_detailLaptop.message,
+            error_category: error_category === undefined ? "no error_category laptop": error_category.message,
             status : 0 
         })
     } else {
-        const checkExit = await isLaptopExit(req.body.laptop_name, res)
-        console.log('check exit', checkExit)
+        const checkExit = await db.Laptop.findOne({ where : { laptop_name: req.body.laptop.laptop_name } })
         if(!checkExit) next()
         else return res.status(401).json({
-            error: `${req.body.laptop_name} is exit`, 
+            error: `${req.body.laptop.laptop_name} is exit`, 
             status: 0
         })
     } 
 }
 
-const schema = joi.object({
+const schemaLaptop = joi.object({
     laptop_name: joi.string().required(),
     status: joi.number().integer().required(),
     qty: joi.number().integer().required(),
-    price: joi.number().float().required(),
+    price: joi.number().required(),
     brand_id: joi.number().integer().required(),
-    category: joi.required(),
+})
+
+const schemaDetailLaptop = joi.object({
     cpu: joi.string().required(),
     ram: joi.string().required(),
     rom: joi.string().required(),
     card_vga: joi.string().required(),
     webcam: joi.string().required(),
     connect: joi.string().required(),
-    weight: joi.float().required(),
+    weight: joi.number().required(),
     pin: joi.string().required(),
     os: joi.string().required(),
-    desc: joi.text().required(),
+    desc: joi.required()
 })
+
+const schemaCategory = joi.object({
+    value: joi.array().items(joi.number().required()).min(1).required()
+})
+
+
 
 module.exports = validateLaptop

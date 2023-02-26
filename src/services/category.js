@@ -5,7 +5,8 @@ export const crateCategory = (data) => new Promise( async (resolve, reject) => {
        const category = await db.Category.create(data)
        resolve({
         message: "Create category successfully",
-        category: category
+        category: category,
+        status: 1
        })
     } catch (error) {
         console.log(error)
