@@ -49,8 +49,7 @@ export const getLaptop = (id) => new Promise( async (resolve, reject) => {
                 exclude: ['createdAt', 'updatedAt']
             }
         })
-        console.log(category)
-
+   
         const list_category =  []
         for(let i=0 ; i < category.length; i++) {
             const category_id = category[i].dataValues.category_id
@@ -70,7 +69,6 @@ export const getLaptop = (id) => new Promise( async (resolve, reject) => {
         reject(error)
         
     }
-
 
 })
 

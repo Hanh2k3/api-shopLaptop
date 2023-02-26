@@ -28,7 +28,8 @@ const create = async (req, res) => {
             await categoryLaptop.crateCategoryLaptop(data)
         })
 
-        const { laptop } = await laptopService.getLaptop(laptop_id)
+        const { laptop }  = await laptopService.getLaptop(laptop_id)
+        
      
         res.status(200).json({
             message: 'Laptop created  successfully',
@@ -40,6 +41,23 @@ const create = async (req, res) => {
     }
 }
 
+const getOne = async (req, res) => {
+    try {
+        const id = req.body.id
+        const { laptop } = await laptopService.getLaptop(id)
+        res.status(200).json({
+            message: 'Laptop get  successfully',
+            laptop: laptop,
+            status: 1
+        })
+
+    } catch (error) {
+        handleError.internalServerError(res, error) 
+    }
+
+}
+
 module.exports = {
-    create
+    create,
+    getOne
 }

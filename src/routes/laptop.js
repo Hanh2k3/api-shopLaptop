@@ -6,7 +6,7 @@ const laptopController = require("../controllers/laptop")
 const passport = require("../middlewares/verify_token")
 
 
-
+router.route('/').get(laptopController.getOne)
 
 // PRIVATE ROUTE
 router.use(checkAuthorization)
