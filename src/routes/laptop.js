@@ -6,13 +6,14 @@ const laptopController = require("../controllers/laptop")
 const passport = require("../middlewares/verify_token")
 
 
-router.route('/').get(laptopController.getOne)
+router.route('/').get(laptopController.getListLaptops)
+router.route('/:id').get(laptopController.getOne)
+
 
 // PRIVATE ROUTE
 router.use(checkAuthorization)
 router.use(passport.authenticate("jwt", { session: false }))      
 router.use(isAdmin.isAdmin)
-
 router.route('/')
       .post(validateLaptop, laptopController.create)
 

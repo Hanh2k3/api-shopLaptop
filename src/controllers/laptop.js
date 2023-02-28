@@ -4,8 +4,6 @@ const categoryLaptop = require('../services/categoryLaptop')
 const handleError = require('../middlewares/handle_errors')
 
 
-
-
 const create = async (req, res) => {
     try {
      
@@ -30,7 +28,6 @@ const create = async (req, res) => {
 
         const { laptop }  = await laptopService.getLaptop(laptop_id)
         
-     
         res.status(200).json({
             message: 'Laptop created  successfully',
             laptop: laptop,
@@ -43,7 +40,7 @@ const create = async (req, res) => {
 
 const getOne = async (req, res) => {
     try {
-        const id = req.body.id
+        const id = req.params.id
         const { laptop } = await laptopService.getLaptop(id)
         res.status(200).json({
             message: 'Laptop get  successfully',
@@ -54,10 +51,27 @@ const getOne = async (req, res) => {
     } catch (error) {
         handleError.internalServerError(res, error) 
     }
+}
 
+// get list laptop
+const getListLaptops = async (req, res) => {
+    try {
+        
+        const { laptops } = await laptopService.getListLaptops(req.query)
+       
+        return res.status(200).json({ 
+            message: 'got list laptop',
+            laptop: laptops,
+            status: 1
+        })
+    } catch (error) {
+        
+        handleError.internalServerError(res, error)
+    }
 }
 
 module.exports = {
     create,
-    getOne
+    getOne,
+    getListLaptops
 }

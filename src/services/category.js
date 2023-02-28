@@ -13,3 +13,18 @@ export const crateCategory = (data) => new Promise( async (resolve, reject) => {
         reject(error)
     }
 })
+
+export const getCategory = (id) => new Promise(async (resolve, reject) => {
+    try {
+        const category = await db.Category.findOne({ 
+            where: { id: id},
+            raw: true,
+            nest: true
+        })
+        resolve({
+            category: category
+        })
+    } catch (error) {
+        reject(error)
+    }
+})

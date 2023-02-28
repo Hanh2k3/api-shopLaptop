@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Laptop.belongsTo(models.Brand, { foreignKey: 'brand_id', targetKey: 'id'})
-      Laptop.hasOne(models.DetailLaptop, { foreignKey: 'id' })
+      Laptop.belongsTo(models.DetailLaptop, { foreignKey: 'detail_id' })
       
     }
   }
