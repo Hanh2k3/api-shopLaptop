@@ -38,6 +38,25 @@ const create = async (req, res) => {
     }
 }
 
+// update laptop 
+const updateLaptop = async (req, res) => {
+    try {
+        const laptop_id = req.params.id
+        const data = req.body
+        const { laptop  } = await laptopService.updateLaptop(data, laptop_id)
+        return res.status(200).json({
+            status: 1,
+            message: "Update oke",
+            laptop: laptop
+        })
+
+        
+    } catch (error) {
+        handleError.internalServerError(res, error)
+        
+    }
+}
+
 const getOne = async (req, res) => {
     try {
         const id = req.params.id
@@ -51,6 +70,23 @@ const getOne = async (req, res) => {
     } catch (error) {
         handleError.internalServerError(res, error) 
     }
+}
+
+// delete laptop
+const deleteLaptop = async (req, res) => {
+    try {
+        const id = +req.params.id
+        console.log('id', id) 
+        await  laptopService.deleteLaptop(id)
+        
+        return res.status(200).json({
+            status: 1,
+            message: 'delete ok'
+        })
+    } catch (error) {
+        handleError.internalServerError(res, error)
+    }
+
 }
 
 // get list laptop
@@ -72,6 +108,8 @@ const getListLaptops = async (req, res) => {
 
 module.exports = {
     create,
+    updateLaptop,
+    deleteLaptop,
     getOne,
     getListLaptops
 }

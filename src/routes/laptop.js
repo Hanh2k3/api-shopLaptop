@@ -17,6 +17,10 @@ router.use(isAdmin.isAdmin)
 router.route('/')
       .post(validateLaptop, laptopController.create)
 
+router.route('/:id')
+      .put(laptopController.updateLaptop)
+      .delete(laptopController.deleteLaptop)
+
 
 
 module.exports = router
