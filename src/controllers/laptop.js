@@ -6,7 +6,20 @@ const handleError = require('../middlewares/handle_errors')
 
 const create = async (req, res) => {
     try {
-     
+        
+        console.log(req.files)
+
+        const files = req.files
+        const paths = []
+        for (const file of files) {
+            const { path } = file
+            paths.push(path)
+        }
+        return res.status(200).json({ 
+            paths: paths
+        })
+
+
         // insert data into table detail laptop
         const { detail_id } = await detailLaptopService.crateDetailLaptop(req.body.detail_laptop)
 

@@ -1,7 +1,9 @@
 // const cors = require('cors')
-import cors from 'cors'
-import express from 'express'
-import bodyParser from 'body-parser'
+const  cors = require('cors')
+const  express = require('express')
+const  bodyParser = require('body-parser')
+const multipart = require('connect-multiparty')
+const multipartMiddleware = multipart()
 
 require('dotenv').config()
 const routes = require('./src/routes')
@@ -18,6 +20,7 @@ app.use(cors({
 app.use(express.json()) // get Data type Json
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(multipartMiddleware)
 
 // set Route 
 routes(app)

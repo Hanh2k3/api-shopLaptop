@@ -7,14 +7,25 @@ const validateLaptop = async (req, res, next) => {
     const { error } = schemaLaptop.validate(req.body.laptop)
     const detail_laptop = schemaDetailLaptop.validate(req.body.detail_laptop)
     const error_detailLaptop = detail_laptop.error
+
+    const test = JSON.parse(req.body.laptop)
     
+    console.log(test.laptop_name)
+    console.log(typeof(test))
+    console.log(req.files)
     const category = schemaCategory.validate(req.body.category_id)
     const error_category = category.error
-    if(error || error_detailLaptop || error_category){
+   
+    const image = schemaImage.validate(req.body.images)
+    const error_image = image.error
+
+
+    if(error || error_detailLaptop || error_category || error_image){
         res.status(400).json({ 
             error: error === undefined ? "no error laptop": error.message,
             error_detailLaptop: error_detailLaptop === undefined ? "no error detail laptop" : error_detailLaptop.message,
             error_category: error_category === undefined ? "no error_category laptop": error_category.message,
+            error_image: error_image === undefined ? "no error_image laptop": error_image.message,
             status : 0 
         })
     } else {
@@ -48,10 +59,12 @@ const schemaDetailLaptop = joi.object({
     desc: joi.required()
 })
 
+
 const schemaCategory = joi.object({
     value: joi.array().items(joi.number().required()).min(1).required()
 })
 
+const schemaImage = joi.array().items(joi.number().required()).min(1).required()
 
 
 module.exports = validateLaptop

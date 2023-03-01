@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Laptop.belongsTo(models.Brand, { foreignKey: 'brand_id', targetKey: 'id'})
       Laptop.belongsTo(models.DetailLaptop, { foreignKey: 'detail_id' })
+      Laptop.hasMany(models.Image, { foreignKey: 'laptop_id'})
       
     }
   }
