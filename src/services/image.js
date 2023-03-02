@@ -30,7 +30,7 @@ export const getListImages = (laptop_id) => new Promise( async(resolve, reject) 
         const listImages = await db.Image.findAll({
             where: { laptop_id: laptop_id },
             attributes: {
-                exclude: ['id', 'createdAt', 'updatedAt', 'laptop_id']
+                exclude: ['id', 'createdAt', 'updatedAt']
             },
             raw: true,
             nest: true
@@ -40,6 +40,20 @@ export const getListImages = (laptop_id) => new Promise( async(resolve, reject) 
             images: listImages
         })
 
+    } catch (error) {
+        reject(error)
+    }
+})
+
+export const remove = (laptop_id) => new Promise( async (resolve, reject) => {
+    try {
+        const result = await db.Image.destroy({
+            where: { laptop_id: laptop_id },
+            force: true
+        })
+        resolve({
+            status: 1
+        })
     } catch (error) {
         reject(error)
     }

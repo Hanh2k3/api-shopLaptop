@@ -1,29 +1,10 @@
 const db = require('../models')
 const { Op } = require('sequelize')
-const { getCategory } = require('./category')
-const { getListCategory } = require('./category')
-const { getListImages } = require('./image')
-const { getListCategoryId } = require('./categoryLaptop')
-
-const getCategoryId = async function (id) {
-    try {
-
-        const categories = await db.CategoryLaptop.findAll({ 
-            where : { laptop_id: id },
-            attributes: {
-                exclude: ['id', 'laptop_id', 'createdAt', 'updatedAt']
-            },
-            raw: true,
-            nest: true
-        })
-        
-        return categories
-
-        
-    } catch (error) {
-        
-    }
-}
+const category = require('./category')
+const image = require('./image')
+const detailLaptop = require('./detailLaptop')
+const categoryLaptop = require('./categoryLaptop')
+const cloudinary =  require('cloudinary').v2
 
 // create laptop
 export const createLaptop = (data) => new Promise(async(resolve, reject) => {
@@ -73,19 +54,15 @@ export const getLaptop = (id) => new Promise( async (resolve, reject) => {
         }
 
         // get category name
-        const { categories_id } = await getListCategoryId(id)
+        const { categories_id } = await categoryLaptop.getListCategoryId(id)
         const list_id = categories_id.map(category => category.category_id)
-        const { list_categories } = await getListCategory(list_id)
-
+        const { list_categories } = await category.getListCategory(list_id)
         const categories_name = list_categories.map(category => category.category_name)
         laptop.categories = categories_name
 
         // get image for laptop 
-        const listImages = await getListImages(id)
-        console.log(listImages)
+        const listImages = await image.getListImages(id)
         laptop.images = listImages.images
-
-       
         resolve({ 
             laptop: laptop
         })
@@ -131,21 +108,21 @@ export const getListLaptops = ({page, limit, name, price, ...query}) => new Prom
             ],
             ...queries
         })
-
-                
+   
         for (let i = 0; i < laptops.rows.length; i++) {
+
+            // get category name
             const laptop_id = laptops.rows[i].id
-            const categories = await getCategoryId(laptop_id)
-            const category = categories.map(category => category.category_id)
+            const { categories_id } = await categoryLaptop.getListCategoryId(laptop_id)
+            const list_id = categories_id.map(category => category.category_id)
+            const { list_categories } = await category.getListCategory(list_id)
+            const categories_name = list_categories.map(category => category.category_name)
 
-            const list_name_cat = []
-            for(let j=0; j<category.length; j++) {
-                const cat = await getCategory(category[j])
-                const cat_name = cat.category.category_name
-                list_name_cat.push(cat_name)
+            laptops.rows[i].category = categories_name
 
-            }
-            laptops.rows[i].category = list_name_cat
+            // get image 
+            const listImages = await image.getListImages(laptop_id)
+            laptops.rows[i].images = listImages.images
         }
        
         return  resolve({
@@ -164,28 +141,50 @@ export const updateLaptop = (data, laptop_id) => new Promise( async (resolve, re
        // console.log(data.laptop, laptop_id)
         const laptop = await db.Laptop.update(data.laptop, {where: {id : +laptop_id}})
 
-
         // update detail laptop
         const detail = await getLaptop(laptop_id)
-        const detail_id = detail.laptop.laptop.detail_id
+        const detail_id = detail.laptop.detail_id
         const detail_laptop = await db.DetailLaptop.update(data.detail_laptop, {where: {id : detail_id}})
+        console.log(detail_laptop)
         
         // update category laptop
-        // delete 
+            // delete 
         await db.CategoryLaptop.destroy({
             where: { laptop_id: laptop_id },
             force: true
         })
-        const list_categories = data.category_id.value  
-        console.log('cat value', list_categories)
-        // create 
-        list_categories.forEach(async (item) => {
-            
-            await db.CategoryLaptop.create({
-                category_id: item,
+
+            // create 
+        const category_id = data.category
+        const categoryLaptopData = category_id.map(category => {
+            return {
+                category_id: category,
                 laptop_id: laptop_id
-            })
+            }
         })
+        await categoryLaptop.createMulCategoryLaptop(categoryLaptopData)
+        const images = data.images
+
+        if(images.length > 0 ){
+        
+            // delete images old 
+            const listImg = await image.getListImages(laptop_id) 
+            listImg.images.forEach(item => {
+                cloudinary.uploader.destroy(item.image_name)
+            })            
+            await image.remove(laptop_id)
+
+            // create new images 
+            const data_img = images.map(item => {
+                return {
+                    laptop_id: laptop_id,
+                    path: item.path,
+                    image_name: item.filename
+                }
+            })
+            await image.createMulImage(data_img)
+        }
+
         const newLaptop = await getLaptop(laptop_id)
         resolve({
             laptop: newLaptop
@@ -199,24 +198,27 @@ export const updateLaptop = (data, laptop_id) => new Promise( async (resolve, re
 // delete 
 export const deleteLaptop = (laptop_id) => new Promise( async (resolve, reject) => {
     try {
-        const detail = await getLaptop(laptop_id) 
-        const detail_id = detail.laptop.laptop.detail_id
-        console.log('detail ',detail_id)
-        await db.CategoryLaptop.destroy({
-            where: { laptop_id: laptop_id },
-            force: true
+        const laptop  = await getLaptop(laptop_id) 
+        const detail_id = laptop.laptop.detail_id
+      
+        // await categoryLaptop.remove(laptop_id)
+
+        await detailLaptop.deleteDetailLaptop(detail_id)
+
+        // delete image on cloudinary 
+        const listImages =  await  image.getListImages(laptop_id)
+        const img = listImages.images
+        console.log(img)
+        img.forEach(image => {     
+            cloudinary.uploader.destroy(image.image_name)
         })
 
+        await image.remove(laptop_id)
         await db.Laptop.destroy({
             where: { id: laptop_id },
             force: true,
         })
-
-        await db.DetailLaptop.destroy({
-            where: { id: detail_id },
-            force: true
-        })
-
+      
         resolve({
             status: 1 
         })

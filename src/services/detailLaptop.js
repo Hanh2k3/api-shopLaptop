@@ -15,3 +15,19 @@ export const crateDetailLaptop = (data) => new Promise( async (resolve, reject) 
         reject(error)
     }
 })
+
+export const deleteDetailLaptop = (laptop_id) => new Promise( async(resolve, reject) => {
+    try {
+        const result = await db.DetailLaptop.destroy({
+            where: { id: laptop_id},
+            force: true
+        })
+
+        resolve({
+            status: 1
+        })
+        
+    } catch (error) {
+        reject(error)
+    }
+})

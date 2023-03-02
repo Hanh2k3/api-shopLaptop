@@ -54,8 +54,16 @@ const create = async (req, res) => {
 // update laptop 
 const updateLaptop = async (req, res) => {
     try {
+
         const laptop_id = req.params.id
-        const data = req.body
+        const images = req.files
+        const data = {
+            laptop: req.body.laptop,
+            detail_laptop: req.body.detail_laptop,
+            category: req.body.category,
+            images: images
+        }   
+
         const { laptop  } = await laptopService.updateLaptop(data, laptop_id)
         return res.status(200).json({
             status: 1,
@@ -92,7 +100,6 @@ const getOne = async (req, res) => {
 const deleteLaptop = async (req, res) => {
     try {
         const id = +req.params.id
-        console.log('id', id) 
         await  laptopService.deleteLaptop(id)
         
         return res.status(200).json({
@@ -112,9 +119,9 @@ const getListLaptops = async (req, res) => {
         const { laptops } = await laptopService.getListLaptops(req.query)
        
         return res.status(200).json({ 
-            message: 'got list laptop',
-            laptop: laptops,
-            status: 1
+            message: laptops.count == 0 ?'not found' : 'got list laptop',
+            laptop: laptops.count == 0? null : laptops,
+            status: laptops.count == 0? 0 : 1,
         })
     } catch (error) {
         

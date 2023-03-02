@@ -5,6 +5,9 @@ const validateLaptop = require("../helpers/validate_laptop")
 const laptopController = require("../controllers/laptop")
 const passport = require("../middlewares/verify_token")
 const uploader = require("../middlewares/uploader")
+const { checkExits  } = require("../helpers/validate_delete")
+const validateUpDate = require("../helpers/validate_update_laptop")
+
 
 router.route('/').get(laptopController.getListLaptops)
 router.route('/:id').get(laptopController.getOne)
@@ -20,9 +23,8 @@ router.route('/')
 
 
 router.route('/:id')
-      .put(laptopController.updateLaptop)
-      .delete(laptopController.deleteLaptop)
-
+      .put(checkExits,uploader.array('images'),validateUpDate,laptopController.updateLaptop)
+      .delete(checkExits, laptopController.deleteLaptop)
 
 
 module.exports = router

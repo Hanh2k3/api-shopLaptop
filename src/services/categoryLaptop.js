@@ -48,3 +48,15 @@ export const getListCategoryId = (laptop_id) => new Promise(async (resolve, reje
         reject(error)
     }
 })
+
+export const remove = (laptop_id) => new Promise( async (resolve, reject) => {
+    try {
+        const result = await db.CategoryLaptop.destroy({
+            where: { laptop_id: laptop_id },
+            force: true
+        })
+    } catch (error) {
+        reject(error)
+        
+    }
+})
