@@ -204,7 +204,7 @@ export const deleteLaptop = (laptop_id) => new Promise( async (resolve, reject) 
         // await categoryLaptop.remove(laptop_id)
 
         await detailLaptop.deleteDetailLaptop(detail_id)
-
+       
         // delete image on cloudinary 
         const listImages =  await  image.getListImages(laptop_id)
         const img = listImages.images
