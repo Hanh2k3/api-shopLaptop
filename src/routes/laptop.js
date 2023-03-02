@@ -16,7 +16,8 @@ router.use(passport.authenticate("jwt", { session: false }))
 router.use(isAdmin.isAdmin)
 router.route('/')
       //.post(validateLaptop, laptopController.create)
-      .post(validateLaptop,uploader.array('images'), laptopController.create)
+      .post(uploader.array('images'),validateLaptop,laptopController.create) // ,
+
 
 router.route('/:id')
       .put(laptopController.updateLaptop)

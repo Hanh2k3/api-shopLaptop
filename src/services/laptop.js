@@ -1,6 +1,9 @@
 const db = require('../models')
 const { Op } = require('sequelize')
 const { getCategory } = require('./category')
+const { getListCategory } = require('./category')
+const { getListImages } = require('./image')
+const { getListCategoryId } = require('./categoryLaptop')
 
 const getCategoryId = async function (id) {
     try {
@@ -57,43 +60,39 @@ export const getLaptop = (id) => new Promise( async (resolve, reject) => {
                     attributes: {
                         exclude: ['id', 'createdAt', 'updatedAt', 'status']
                     }
-                }
+                },
             ],
             raw: true,
             nest: true
         })
-       
-        const category = await db.CategoryLaptop.findAll({
-            where: { 
-                laptop_id: id
-            },   
-             attributes: {
-                exclude: ['createdAt', 'updatedAt']
-            }
-        })
-   
-        const list_category =  []
-        for(let i=0 ; i < category.length; i++) {
-            const category_id = category[i].dataValues.category_id
-            const cat = await db.Category.findByPk(category_id)
-            const cat_name = cat.dataValues.category_name 
-            list_category.push(cat_name)
+
+        if(!laptop)  {
+            return resolve({
+                laptop: null
+            })
         }
 
-        const test = {
-            laptop
-        }
-  
-        test.category = list_category
-        console.log(test)
-        return resolve({ 
-            laptop: test
+        // get category name
+        const { categories_id } = await getListCategoryId(id)
+        const list_id = categories_id.map(category => category.category_id)
+        const { list_categories } = await getListCategory(list_id)
+
+        const categories_name = list_categories.map(category => category.category_name)
+        laptop.categories = categories_name
+
+        // get image for laptop 
+        const listImages = await getListImages(id)
+        console.log(listImages)
+        laptop.images = listImages.images
+
+       
+        resolve({ 
+            laptop: laptop
         })
     } catch (error) {
         reject(error)
         
     }
-
 })
 
 

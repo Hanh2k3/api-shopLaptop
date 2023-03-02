@@ -16,3 +16,35 @@ export const crateCategoryLaptop = (data) => new Promise( async (resolve, reject
         reject(error)
     }
 })
+
+export const createMulCategoryLaptop = (data) => new Promise( async (resolve, reject) => {
+    try {
+        const list = await db.CategoryLaptop.bulkCreate(data)
+        resolve({
+            status: 1
+        })
+    } catch (error) {
+        reject(error)
+    }
+})
+
+export const getListCategoryId = (laptop_id) => new Promise(async (resolve, reject) => {
+    try {
+        const categories = await db.CategoryLaptop.findAll({
+            where: {laptop_id: laptop_id},
+            attributes: {
+                exclude: ['id', 'laptop_id', 'createdAt', 'updatedAt'] 
+            },
+            raw: true,
+            nest: true
+        })
+
+        resolve({
+            categories_id: categories
+        })
+
+
+    } catch (error) {
+        reject(error)
+    }
+})

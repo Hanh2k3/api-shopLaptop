@@ -1,24 +1,13 @@
 const laptopService = require('../services/laptop')
 const detailLaptopService = require('../services/detailLaptop')
-const categoryLaptop = require('../services/categoryLaptop')
+const categoryLaptopService = require('../services/categoryLaptop')
+const imageService = require('../services/image')
 const handleError = require('../middlewares/handle_errors')
 
 
 const create = async (req, res) => {
     try {
-        
-        console.log(req.files)
-
-        const files = req.files
-        const paths = []
-        for (const file of files) {
-            const { path } = file
-            paths.push(path)
-        }
-        return res.status(200).json({ 
-            paths: paths
-        })
-
+        const images = req.files
 
         // insert data into table detail laptop
         const { detail_id } = await detailLaptopService.crateDetailLaptop(req.body.detail_laptop)
@@ -29,23 +18,34 @@ const create = async (req, res) => {
         const { laptop_id } = await laptopService.createLaptop(laptop_data)
 
         //insert data into table category laptop
-        const category_id = req.body.category_id.value
-        category_id.forEach( async(item) => {
-            const data = {
-                category_id: item,
+        const category_id = req.body.category
+        const categoryLaptopData = category_id.map(category => {
+            return {
+                category_id: category,
                 laptop_id: laptop_id
             }
-         
-            await categoryLaptop.crateCategoryLaptop(data)
         })
+        await categoryLaptopService.createMulCategoryLaptop(categoryLaptopData)
 
-        const { laptop }  = await laptopService.getLaptop(laptop_id)
-        
+        // insert image into images
+        const imageData = images.map(image => {
+            return {
+                laptop_id: laptop_id,
+                image_name: image.filename,
+                path: image.path 
+            }
+        })
+        await imageService.createMulImage(imageData)
+
+        const { laptop } = await laptopService.getLaptop(laptop_id)
+    
+
         res.status(200).json({
             message: 'Laptop created  successfully',
             laptop: laptop,
             status: 1
         })
+
     } catch (error) {
         handleError.internalServerError(res, error)
     }
@@ -72,12 +72,15 @@ const updateLaptop = async (req, res) => {
 
 const getOne = async (req, res) => {
     try {
-        const id = req.params.id
+        const id = +req.params.id
+        
         const { laptop } = await laptopService.getLaptop(id)
+       
+        
         res.status(200).json({
-            message: 'Laptop get  successfully',
+            message: !laptop ? 'Not found': 'Laptop get  successfully',
             laptop: laptop,
-            status: 1
+            status: !laptop ? 0: 1
         })
 
     } catch (error) {
