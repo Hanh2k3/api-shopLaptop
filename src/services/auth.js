@@ -15,7 +15,7 @@ export const encodeToken = async (data) => {
         const token = await jwt.sign({
                     user_id: data.id,
                     role_id:data.role_di
-        }, process.env.JWT_SECRET, { expiresIn: '1d' })
+        }, process.env.JWT_SECRET, { expiresIn: '5h' })
         return 'Bearer '  + token
     } catch (error) {
         
