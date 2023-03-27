@@ -110,21 +110,17 @@ export const getListLaptops = ({page, limit, name, price, ...query}) => new Prom
         })
    
         for (let i = 0; i < laptops.rows.length; i++) {
-
             // get category name
             const laptop_id = laptops.rows[i].id
             const { categories_id } = await categoryLaptop.getListCategoryId(laptop_id)
             const list_id = categories_id.map(category => category.category_id)
             const { list_categories } = await category.getListCategory(list_id)
             const categories_name = list_categories.map(category => category.category_name)
-
             laptops.rows[i].category = categories_name
-
             // get image 
             const listImages = await image.getListImages(laptop_id)
             laptops.rows[i].images = listImages.images
         }
-       
         return  resolve({
                 laptops : laptops
         })

@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       CategoryLaptop.hasMany(models.Laptop, { foreignKey: 'id', targetKey: 'laptop_id'})
       CategoryLaptop.hasMany(models.Category, { foreignKey: 'id', targetKey: 'category_id'})
-      
     }
   }
   CategoryLaptop.init({

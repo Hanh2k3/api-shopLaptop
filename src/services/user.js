@@ -15,7 +15,9 @@ export const  getOne = (userId) => new Promise( async (resolve, reject) => {
                         exclude: ['id', 'createdAt', 'updatedAt']
                     }
                 }
-            ] 
+            ] ,
+            raw: true,
+            nest: true
         }) 
         resolve({
            user: user

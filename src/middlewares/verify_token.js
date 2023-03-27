@@ -73,6 +73,5 @@ passport.use(new GooglePlusTokenStrategy({
 //         done(null, error)
 //     }
 
-// }))
-
+// }))    
 module.exports = passport
