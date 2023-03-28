@@ -1,6 +1,8 @@
 export const  isAdmin = (req, res, next) => {   
     const user = req.user
-    const role = user.user.dataValues.Role.dataValues.value
+
+    console.log(user)
+    const role = user.user.Role.value
     if(role == "R1") next() 
     else {
         return res.status(403).json({

@@ -1,5 +1,6 @@
 const db = require('../models')
 const laptopService = require('../services/laptop')
+const con = require('../config/db')
 
 export const checkIsExit = (user_id, laptop_id) => new Promise( async(resolve,reject) => {
     try {  
@@ -45,6 +46,35 @@ export const getAll = (user_id) => new Promise( async(resolve, reject) => {
             laptops.laptops.rows[i].qty = product[i].qty
         }
         return resolve(laptops)
+    } catch (error) {
+        reject(error)
+    }
+})
+
+export const updateItem = (user_id, laptop_id, qty) => new Promise( async(resolve, reject) => {
+    try {       
+       const sql = `update carts set qty = ${qty} where user_id = ${user_id} and laptop_id = ${laptop_id}`
+       con.query(sql, (err, result) => {
+            if (err) return reject(err)
+       })
+       resolve({
+            oke: "oke"
+       })
+    } catch (error) {
+        reject(error)
+    }
+})
+
+export const removeItem = (user_id, laptop_id) => new Promise( async(resolve, reject) => {
+    try {
+        const sql = `delete from carts where user_id = ${user_id} and laptop_id = ${laptop_id}`
+        con.query(sql, (err, result) => {
+            if(err) return reject(err)
+
+        })
+        resolve({
+            status: 1
+        })
     } catch (error) {
         reject(error)
     }

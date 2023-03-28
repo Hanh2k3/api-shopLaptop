@@ -4,9 +4,13 @@ const  express = require('express')
 const  bodyParser = require('body-parser')
 const multipart = require('connect-multiparty')
 const multipartMiddleware = multipart()
+const con = require('./src/config/db')
 
 require('dotenv').config()
 const routes = require('./src/routes')
+
+// connect to database
+con.connect()
 
 const app = express()
 
