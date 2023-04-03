@@ -1,6 +1,7 @@
 const joi = require('joi')
 
 const validateLogin = (req, res, next) => {
+    console.log(req.body.email)
 
     const { error } = schema.validate(req.body)
     if(error){

@@ -117,10 +117,10 @@ const getListLaptops = async (req, res) => {
     try {
         
         const { laptops } = await laptopService.getListLaptops(req.query)
-       
+    
         return res.status(200).json({ 
             message: laptops.count == 0 ?'not found' : 'got list laptop',
-            laptop: laptops.count == 0? null : laptops,
+            data: laptops.count == 0? null : laptops,
             status: laptops.count == 0? 0 : 1,
         })
     } catch (error) {

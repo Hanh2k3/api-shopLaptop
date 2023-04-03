@@ -52,11 +52,12 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const { email, password } = req.body 
+        console.log("Email ", email)
         const token = await authService.login(email, password)
         if(!token) {
         return res.status(401).json({
                 status: 0, 
-                error: 'Email or password invalid'
+                message: 'Email or password invalid'
             })
         } else {
             res.setHeader('Authorization', token)

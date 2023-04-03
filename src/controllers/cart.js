@@ -30,17 +30,21 @@ const getAll = async (req, res) => {
         const user_id = req.user.user.id
         const listCarts = await cartService.getAll(user_id)
 
+        const data = listCarts.laptops
         if(listCarts.length === 0) {
             return res.status(200).json({
                 message: "Cart is empty",
                 status: 1,
-                data: listCarts
+                data: {
+                    count: 0,
+                    rows: []
+                }
             })
         }
         return res.status(200).json({
             message: "Get all cart items",
             status: 1,
-            data: listCarts
+            data
         })
     } catch (error) {
         handleError.internalServerError(res, error)
