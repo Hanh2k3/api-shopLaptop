@@ -1,4 +1,5 @@
 const orderService = require('../services/order')
+const orderDetailService = require('../services/orderDetail')
 const shippingService = require('../services/shipping')
 const handleError = require('../middlewares/handle_errors')
 
@@ -40,6 +41,8 @@ const insertOrder = async (req, res) => {
                 order_id: order_id
             }
         })
+        await orderDetailService.insertOrderDetail(orderDetailData)
+        
         return res.status(200).json({
             status: 1,
             message: "Order successfully"
@@ -49,9 +52,27 @@ const insertOrder = async (req, res) => {
     }  
 }
 
+const getOrder = async (req, res) => {
+    try {
+        const user_id = req.user.user.id
+        const list_order = await orderService.getOrder(user_id)
+
+        // get detail order 
+        const order_id = list_order.map(item => item.id)
+        order_id.forEach( async (item) => {
+            const order_detail = await orderDetailService.getOrderDetail(item)
+            console.log(order_detail)
+        })
+
+      
+        return res.status(200).json(list_order)
+    } catch (error) {
+        handleError.internalServerError(res, error)
+    }
+}
 
 
 module.exports = {
-    insertOrder
- 
+    insertOrder,
+    getOrder
 }

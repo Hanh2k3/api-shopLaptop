@@ -18,7 +18,6 @@ module.exports = (sequelize, DataTypes) => {
   Shipping.init({
     address: DataTypes.STRING,
     phone: DataTypes.STRING,
-    payment_id: DataTypes.INTEGER,
     notes: DataTypes.STRING,
     fees_ship : DataTypes.STRING,
   }, {

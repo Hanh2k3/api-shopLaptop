@@ -12,6 +12,9 @@ router.use(passport.authenticate("jwt", { session: false }))
 
 router.route("/")
       .post(orderController.insertOrder)
+      .get(orderController.getOrder)
+
+
 
 module.exports = router
 
