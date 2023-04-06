@@ -24,7 +24,7 @@ export const getOrder = (user_id) => new Promise( async(resolve, reject) => {
                     model: db.Payment,
                     foreignKey: 'payment_id', 
                     attributes: {
-                        exclude: ['id', 'createdAt', 'updatedAt', 'value', 'status']
+                        exclude: ['id', 'createdAt', 'updatedAt', 'status']
                     }
                 },
                 {

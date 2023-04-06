@@ -1,4 +1,6 @@
 const db = require('../models')
+const con = require('../config/db')
+
 
 
 export const createImage = (data) => new Promise(async (resolve, reject) => {
@@ -44,6 +46,22 @@ export const getListImages = (laptop_id) => new Promise( async(resolve, reject) 
         reject(error)
     }
 })
+
+export const getListImagesSync =  (laptop_id) =>  {
+    try {
+        const sql = "SELECT id, path FROM images WHERE laptop_id = " + laptop_id
+        let resutl = []
+        const data =   con.query(sql, (err, rows) => {
+            return rows
+        })
+        return data 
+        
+    } catch (error) {
+        
+    }
+
+   
+}
 
 export const remove = (laptop_id) => new Promise( async (resolve, reject) => {
     try {

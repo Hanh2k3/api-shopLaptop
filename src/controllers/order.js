@@ -1,6 +1,8 @@
 const orderService = require('../services/order')
 const orderDetailService = require('../services/orderDetail')
 const shippingService = require('../services/shipping')
+const imageService = require('../services/image')
+
 const handleError = require('../middlewares/handle_errors')
 
 
@@ -52,20 +54,26 @@ const insertOrder = async (req, res) => {
     }  
 }
 
+
 const getOrder = async (req, res) => {
     try {
         const user_id = req.user.user.id
         const list_order = await orderService.getOrder(user_id)
-
-        // get detail order 
-        const order_id = list_order.map(item => item.id)
-        order_id.forEach( async (item) => {
-            const order_detail = await orderDetailService.getOrderDetail(item)
-            console.log(order_detail)
-        })
-
-      
-        return res.status(200).json(list_order)
+        // get detail order        
+        let  results = []
+        for (const item of list_order) {
+            const order_detail = await orderDetailService.getOrderDetail(item.id)  
+            const product = item 
+            let laptops = []
+            for (const detail of order_detail) {
+                const { images }   = await imageService.getListImages(detail.Laptop.id);
+                detail.Laptop.images = images;  
+                laptops.push(detail);  
+            }
+            item.laptops = laptops; 
+            results.push(item);
+        }
+        return res.status(200).json(results)
     } catch (error) {
         handleError.internalServerError(res, error)
     }
