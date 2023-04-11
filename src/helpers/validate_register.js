@@ -9,13 +9,13 @@ const validate = async  (req, res, next) => {
         const isUnique = await db.User.findOne({where: {email: req.body.email}})
         console.log(isUnique)
         if(error) {
-           res.status(400).json({
+           res.status(200).json({
             error: error.message,
             status : 0 
         })
         } else {
             if(isUnique) {
-                res.status(404).json({  
+                res.status(200).json({  
                     message: "Email is exit", 
                     status : 0 
                 })

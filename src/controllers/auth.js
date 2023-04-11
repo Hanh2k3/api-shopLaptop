@@ -55,7 +55,7 @@ const login = async (req, res) => {
         console.log("Email ", email)
         const token = await authService.login(email, password)
         if(!token) {
-        return res.status(401).json({
+        return res.status(200).json({
                 status: 0, 
                 message: 'Email or password invalid'
             })
@@ -131,5 +131,4 @@ module.exports = {
     testJwt,
     loginGoogle,
     login
-    
 }

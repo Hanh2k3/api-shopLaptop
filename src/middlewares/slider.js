@@ -13,10 +13,11 @@ const storage = new CloudinaryStorage({
   cloudinary,
   allowedFormats: ['jpg', 'png'],
   params: {
-    folder: 'shop_laptop/laptops'
+    folder: 'shop_laptop/slider'
   }
 });
 
-export const uploadCloud = multer({ storage })
+export const uploadSlider = multer({ storage })
+
 
 

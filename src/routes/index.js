@@ -6,6 +6,7 @@ const laptopRoute = require('./laptop')
 const cartRoute = require('./cart')
 const orderRoute = require('./order')
 const paymentRoute = require('./payment')
+const sliderRoute = require('./slider')
 const { notFound } = require('../middlewares/handle_errors')
 
 
@@ -18,6 +19,7 @@ const initRoute = (app) => {
     app.use('/api/v1/cart', cartRoute)
     app.use('/api/v1/order', orderRoute)
     app.use('/api/v1/payment', paymentRoute)
+    app.use('/api/v1/slider', sliderRoute)
 
        
     // app.use(notFound)
