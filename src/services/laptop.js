@@ -5,6 +5,7 @@ const image = require('./image')
 const detailLaptop = require('./detailLaptop')
 const categoryLaptop = require('./categoryLaptop')
 const cloudinary =  require('cloudinary').v2
+const con = require('../config/db')
 
 // create laptop
 export const createLaptop = (data) => new Promise(async(resolve, reject) => {
@@ -120,9 +121,119 @@ export const getListLaptops = ({page, limit, name, price, ...query}) => new Prom
             // get image 
             const listImages = await image.getListImages(laptop_id)
             laptops.rows[i].images = listImages.images
-        }
+        }    
         return  resolve({
                 laptops : laptops
+        })
+    } catch (error) {
+        reject(error)
+    }
+})
+
+export const getCategoryLaptops = (id) => new Promise( async(resolve, reject) => {
+    try {
+        const sql = `SELECT laptops.id FROM categories INNER JOIN categorylaptops on categories.id = categorylaptops.category_id
+                    INNER JOIN laptops on categorylaptops.laptop_id = laptops.id
+                    WHERE categories.id = ${id}`
+
+        con.query(sql, async (err, rows) => {
+            const new_rows = rows.map(row => row.id)
+           
+            const laptops = await db.Laptop.findAndCountAll({
+                where: {
+                    id: new_rows
+                },
+                attributes: {
+                    exclude: ['brand_id']
+                },
+                include:[
+                    {
+                        model: db.DetailLaptop,
+                        foreignKey: 'detail_id', 
+                        attributes: {
+                            exclude: ['', 'createdAt', 'updatedAt']
+                        }
+                    },
+                    {
+                        model: db.Brand,
+                        foreignKey: 'brand_id', 
+                        attributes: {
+                            exclude: ['id', 'createdAt', 'updatedAt', 'status']
+                        }
+                    }
+                ],
+                raw: true,
+                nest: true 
+            })
+            for (let i = 0; i < laptops.rows.length; i++) {
+                // get category name
+                const laptop_id = laptops.rows[i].id
+                const { categories_id } = await categoryLaptop.getListCategoryId(laptop_id)
+                const list_id = categories_id.map(category => category.category_id)
+                const { list_categories } = await category.getListCategory(list_id)
+                const categories_name = list_categories.map(category => category.category_name)
+                laptops.rows[i].category = categories_name
+                // get image 
+                const listImages = await image.getListImages(laptop_id)
+                laptops.rows[i].images = listImages.images
+            }
+            resolve({ 
+                laptops: laptops 
+            })
+        })
+        
+    } catch (error) {
+        reject(error)
+    }
+})
+
+export const getBrandLaptops = (id) => new Promise( async(resolve, reject) => {
+    try {
+
+        const sql = `SELECT laptops.id FROM brands INNER JOIN laptops ON laptops.brand_id = brands.id WHERE brands.id = ${id}`
+        con.query(sql, async (err, result) => {
+            const id = result.map(item => item.id)
+            const laptops = await db.Laptop.findAndCountAll({
+                where: {
+                    id: id
+                },
+                attributes: {
+                    exclude: ['brand_id']
+                },
+                include:[
+                    {
+                        model: db.DetailLaptop,
+                        foreignKey: 'detail_id', 
+                        attributes: {
+                            exclude: ['', 'createdAt', 'updatedAt']
+                        }
+                    },
+                    {
+                        model: db.Brand,
+                        foreignKey: 'brand_id', 
+                        attributes: {
+                            exclude: ['id', 'createdAt', 'updatedAt', 'status']
+                        }
+                    }
+                ],
+                raw: true,
+                nest: true 
+            })
+            for (let i = 0; i < laptops.rows.length; i++) {
+                // get category name
+                const laptop_id = laptops.rows[i].id
+                const { categories_id } = await categoryLaptop.getListCategoryId(laptop_id)
+                const list_id = categories_id.map(category => category.category_id)
+                const { list_categories } = await category.getListCategory(list_id)
+                const categories_name = list_categories.map(category => category.category_name)
+                laptops.rows[i].category = categories_name
+                // get image 
+                const listImages = await image.getListImages(laptop_id)
+                laptops.rows[i].images = listImages.images
+            }
+            resolve({ 
+                laptops: laptops 
+            })
         })
 
     } catch (error) {

@@ -6,7 +6,13 @@ const { internalServerError } = require('../middlewares/handle_errors')
 const createCategory = async (req, res) => {
     try {
         console.log(req.body)
-        const result = await categoryService.crateCategory(req.body)
+        const data = {
+            category_name: req.body.category_name,
+            status: 1,
+            category_image: req.files[0].path
+
+        }
+        const result = await categoryService.crateCategory(data)
       
         res.status(200).json(result)
     } catch (error) {
@@ -21,7 +27,7 @@ const getAllCategories = async (req, res) => {
         return res.status(200).json({ 
             message: 'got categories',
             status: 1,
-            categories: categories
+            data: categories
         })
     } catch (error) {
         return internalServerError(res, error)

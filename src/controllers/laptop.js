@@ -129,10 +129,43 @@ const getListLaptops = async (req, res) => {
     }
 }
 
+const getCategoryLaptops = async (req, res) => {
+    try {
+        const id = req.params.id 
+        const { laptops } = await laptopService.getCategoryLaptops(+id)
+        return res.status(200).json({ 
+            message: laptops.count == 0 ?'not found' : 'got list laptop',
+            data: laptops.count == 0? null : laptops,
+            status: laptops.count == 0? 0 : 1,
+        })
+        
+    } catch (error) {
+        handleError.internalServerError(res, error)
+        
+    }
+}
+const getBrandLaptops = async (req, res) => {
+    try {
+        const id = req.params.id 
+        await laptopService.getBrandLaptops(+id)
+        const { laptops } = await laptopService.getBrandLaptops(+id)
+        return res.status(200).json({ 
+            message: laptops.count == 0 ?'not found' : 'got list laptop',
+            data: laptops.count == 0? null : laptops,
+            status: laptops.count == 0? 0 : 1,
+        })
+        
+    } catch (error) {
+        handleError.internalServerError(res, error)
+        
+    }
+}
 module.exports = {
     create,
     updateLaptop,
     deleteLaptop,
     getOne,
-    getListLaptops
+    getListLaptops,
+    getCategoryLaptops,
+    getBrandLaptops
 }

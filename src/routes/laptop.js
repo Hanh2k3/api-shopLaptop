@@ -11,7 +11,8 @@ const validateUpDate = require("../helpers/validate_update_laptop")
 
 router.route('/').get(laptopController.getListLaptops)
 router.route('/:id').get(laptopController.getOne)
-
+router.route('/category/:id').get(laptopController.getCategoryLaptops)
+router.route('/brand/:id').get(laptopController.getBrandLaptops)
 
 // PRIVATE ROUTE
 router.use(checkAuthorization)
