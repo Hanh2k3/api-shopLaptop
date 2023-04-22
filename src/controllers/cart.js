@@ -5,7 +5,7 @@ const handleError = require('../middlewares/handle_errors')
 const insertCart = async (req, res) => {
     try {
         // check is exit 
-       
+
         const user_id = req.user.user.id 
         const { laptop_id } = req.body
         const { qty } = req.body
@@ -44,7 +44,7 @@ const getAll = async (req, res) => {
         return res.status(200).json({
             message: "Get all cart items",
             status: 1,
-            data
+            data: listCarts.laptops
         })
     } catch (error) {
         handleError.internalServerError(res, error)
@@ -61,7 +61,8 @@ const updateItem = async (req, res) => {
        await cartService.updateItem(user_id,laptop_id,qty)
         return res.status(200).json({
             status: 1,
-            message: "Update oke"
+            message: "Update oke",
+            data: null 
         })
 
         
@@ -72,15 +73,16 @@ const updateItem = async (req, res) => {
 
 const removeItem =  async (req, res) => {
     try {
+        console.log("oikeeee ")
         const user_id = req.user.user.id 
         const laptop_id  = req.params.laptop_id
         console.log(laptop_id)
         await cartService.removeItem(user_id,laptop_id)
         return res.status(200).json({
             status: 1,
-            message: "Delete successfully"
+            message: "Delete successfully",
+            data: null
         })
-
     } catch (error) {
         
     }

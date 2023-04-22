@@ -36,15 +36,26 @@ export const getAll = (user_id) => new Promise( async(resolve, reject) => {
         
         const product = await  db.Cart.findAll({
             where: { user_id },
+            order : [['laptop_id' , 'ASC']],
             raw: true,
             nest: true
         })
+        
         if(product.length == 0) return resolve(product)    
         const laptop_id = product.map(item => item.laptop_id)
         const laptops = await  laptopService.getListLaptops({id:laptop_id})
+        const newArr = product.map(item => item.qty)
+        const arrSort = newArr
         for(let i=0; i<product.length; i++) {
-            laptops.laptops.rows[i].qty = product[i].qty
-        }
+            laptops.laptops.rows[i].qty = arrSort[i]
+        }  
+        const rows = laptops.laptops.rows.sort((a, b)  => {
+            console.log("a" , a.createdAt); 
+            const datea = new Date(a.createdAt); 
+            const dateb = new Date(b.createdAt);
+            return datea >=dateb ? true : false 
+        })
+        laptops.laptops.rows = rows
         return resolve(laptops)
     } catch (error) {
         reject(error)
