@@ -7,12 +7,14 @@ const cartRoute = require('./cart')
 const orderRoute = require('./order')
 const paymentRoute = require('./payment')
 const sliderRoute = require('./slider')
+const shippingRoute = require('./shipping')
 const { notFound } = require('../middlewares/handle_errors')
 
 
 const initRoute = (app) => {
     app.use('/api/v1/auth', authRoute)
-    app.use('/user', userRoute)
+    app.use('/api/v1/user', userRoute)
+    app.use('/api/v1/shipping', shippingRoute)
     app.use('/api/v1/category', categoryRoute)
     app.use('/api/v1/brand', brandRoute)
     app.use('/api/v1/laptop', laptopRoute)

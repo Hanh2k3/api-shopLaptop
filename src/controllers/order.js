@@ -59,6 +59,7 @@ const getOrder = async (req, res) => {
     try {
         const user_id = req.user.user.id
         const list_order = await orderService.getOrder(user_id)
+        console.log(list_order)
         // get detail order        
         let  results = []
         for (const item of list_order) {
@@ -70,10 +71,14 @@ const getOrder = async (req, res) => {
                 detail.Laptop.images = images;  
                 laptops.push(detail);  
             }
-            item.laptops = laptops; 
+            item.items = laptops; 
             results.push(item);
         }
-        return res.status(200).json(results)
+        return res.status(200).json({
+            status:results.length != 0 ? 1: 0,
+            message: "get success",
+            data: results
+        })
     } catch (error) {
         handleError.internalServerError(res, error)
     }

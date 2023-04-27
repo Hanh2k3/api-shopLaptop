@@ -1,21 +1,17 @@
 const express = require('express')
 const router = require("express-promise-router")()
-const user = require('../controllers/user')
+const shipping = require('../controllers/shipping')
 const checkAuthorization = require("../middlewares/isHasAuthorization")
 const passport = require("../middlewares/verify_token")
 const isAdmin= require("../middlewares/verify_role")
 
+// PRIVATE ROUTER 
 
 router.use(checkAuthorization)
 router.use(passport.authenticate("jwt", { session: false })) 
-router.get('/', user.getUser)
-
-
-
-// PRIVATE ROUTE  is admin 
-router.use(isAdmin.isAdmin)
-router.get('/listUser', user.getAllUsers)
-
+router.route('/')
+      .get(shipping.listShipping)
+      .post(shipping.insertShipping)
 
 
 module.exports = router

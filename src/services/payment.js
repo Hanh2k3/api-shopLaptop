@@ -10,3 +10,4 @@ export const insertPayment = (data) => new Promise(async(resolve, reject) => {
         reject(error)
     }
 })
+
