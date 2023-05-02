@@ -10,7 +10,9 @@ router.use(checkAuthorization)
 router.use(passport.authenticate("jwt", { session: false })) 
 router.get('/', user.getUser)
 
-
+// address 
+router.route('/address')
+      .get(user.getAllAddress)
 
 // PRIVATE ROUTE  is admin 
 router.use(isAdmin.isAdmin)

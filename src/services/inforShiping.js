@@ -21,3 +21,23 @@ export const  getDefaultShipping = (user_id) =>  new Promise( async (resolve, re
     }
 
 })
+
+export const getAllAddress = (user_id) => new Promise( async (resolve, reject) => {
+    try {
+
+        const sql = `select * from userinforshippings left join inforshippings on userinforshippings.inforShipping_id = inforshippings.id Where userinforshippings.user_id = ${user_id}`
+        con.query(sql, (err, rows) => {
+            try {
+                if(err) throw err
+                resolve({
+                    data: rows
+                })
+            } catch (error) {
+                reject(error)
+            }
+        })
+            
+    } catch (error) {
+        reject(error)
+    }
+})

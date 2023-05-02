@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.belongsTo(models.Role, { foreignKey: 'role_id', targetKey: 'id'})
       User.hasMany(models.Cart, { foreignKey: 'cart_id', targetKey: 'id'})
+      User.belongsToMany(models.UserInforShipping, {  through: 'UserInforShippingInforShipping',  foreignKey: 'user_id' })
     }
   }
   User.init({

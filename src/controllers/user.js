@@ -30,7 +30,25 @@ const getUser = async (req, res, next) => {
     }
 }
 
+const getAllAddress = async (req, res, next) => {
+    try {
+        const user_id = req.user.user.id
+
+        const { data } = await inforShippingService.getAllAddress(user_id)
+
+        return res.status(200).json({
+            status: 1,
+            message: 'Get all address',
+            data: data 
+        })
+    } catch (error) {
+        handleError.internalServerError(res, error)
+        
+    }
+}
+
 module.exports = {
     getAllUsers,
-    getUser
+    getUser,
+    getAllAddress
 }

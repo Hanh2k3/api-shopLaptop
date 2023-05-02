@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      
+   //   InforShipping.belongsToMany(models.UserInforShipping, { through: 'UserInforShipping', foreignKey: 'inforShipping_id' })
+   InforShipping.belongsToMany(models.UserInforShipping, {  through: 'UserInforShippingInforShipping',  foreignKey: 'inforShipping_id' })
     }
   }
   InforShipping.init({
