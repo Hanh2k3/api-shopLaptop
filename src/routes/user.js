@@ -13,6 +13,12 @@ router.get('/', user.getUser)
 // address 
 router.route('/address')
       .get(user.getAllAddress)
+      
+
+router.route('/address/:id')
+      .put(user.updateAddress)
+
+
 
 // PRIVATE ROUTE  is admin 
 router.use(isAdmin.isAdmin)

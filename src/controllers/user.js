@@ -37,10 +37,33 @@ const getAllAddress = async (req, res, next) => {
         const { data } = await inforShippingService.getAllAddress(user_id)
 
         return res.status(200).json({
-            status: 1,
-            message: 'Get all address',
+            status: data.length != 0 ? 1 : 0,
+            message: data.length != 0 ?'Get all address' : "no address default ",
             data: data 
         })
+    } catch (error) {
+        handleError.internalServerError(res, error)
+        
+    }
+}
+
+const updateAddress = async (req, res, next) => {
+    try {
+
+       
+        const user_id = req.user.user.id
+        const inforShipping_id = req.params.id 
+        // update all UserInforShipping status == 0 
+        await inforShippingService.updateStatus(user_id)
+        // update default for all 
+        const { status } =   await inforShippingService.updateAddress(user_id, inforShipping_id)
+        console.log("update address")
+        return res.status(200).json({
+            status: status == 1 ? 1 : 0 ,
+            message: status == 1 ? "Ok update" : "false to update address", 
+            data: null 
+        })
+       
     } catch (error) {
         handleError.internalServerError(res, error)
         
@@ -50,5 +73,6 @@ const getAllAddress = async (req, res, next) => {
 module.exports = {
     getAllUsers,
     getUser,
-    getAllAddress
+    getAllAddress,
+    updateAddress
 }

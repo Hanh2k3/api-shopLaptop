@@ -41,3 +41,32 @@ export const getAllAddress = (user_id) => new Promise( async (resolve, reject) =
         reject(error)
     }
 })
+
+export const updateStatus = (user_id) => new Promise( async (resolve, reject) => {
+    try {
+            await db.UserInforShipping.update( { status: 0 }, { where:  { user_id:  user_id } })
+            resolve("oke");
+    } catch (error) {
+        reject(error)
+    }
+})
+
+export const updateAddress = (user_id, inforShipping_id) => new Promise( async (resolve, reject) => {
+    try {
+            console.log("true")
+            await db.UserInforShipping.update( 
+                { status: 1 },
+                 {  
+                 where:   
+                    {  user_id: user_id  , 
+                       inforshipping_id : inforShipping_id
+                    }
+                }
+                )
+            resolve({
+                status: 1 
+            });
+    } catch (error) {
+        reject(error)
+    }
+})
