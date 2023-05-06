@@ -13,6 +13,7 @@ router.get('/', user.getUser)
 // address 
 router.route('/address')
       .get(user.getAllAddress)
+      .post(user.insertAddress)
       
 
 router.route('/address/:id')

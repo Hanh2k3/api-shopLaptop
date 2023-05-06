@@ -2,7 +2,7 @@ const useService = require('../services/user')
 const handleError = require('../middlewares/handle_errors')
 const orderService = require('../services/order')
 const inforShippingService = require('../services/inforShiping')
-
+const shippingService = require('../services/shipping')
 const getAllUsers = async (req, res, next) => {
     try {
         const litUser = await  useService.getAllUser()
@@ -49,8 +49,6 @@ const getAllAddress = async (req, res, next) => {
 
 const updateAddress = async (req, res, next) => {
     try {
-
-       
         const user_id = req.user.user.id
         const inforShipping_id = req.params.id 
         // update all UserInforShipping status == 0 
@@ -70,9 +68,29 @@ const updateAddress = async (req, res, next) => {
     }
 }
 
+const insertAddress = async (req, res) => {
+    try {
+        const user_id = + req.user.user.id
+        const { address, phone, ward_id, district_id } = req.body
+        const data = {address, phone, ward_id, district_id}
+        const { inforShipping_id }  = await shippingService.insertShippingDefault(data)
+        const data1 = {user_id, inforShipping_id, status : 1}
+        console.log(data1)
+        await shippingService.insertUserInforShipping(data1)
+        return res.status(200).json({
+            status : 1,
+            message : 'Success',
+            data: null 
+        })
+    } catch (error) {
+        handleError.internalServerError(res, error)
+    }
+}
+
 module.exports = {
     getAllUsers,
     getUser,
     getAllAddress,
-    updateAddress
+    updateAddress, 
+    insertAddress 
 }
