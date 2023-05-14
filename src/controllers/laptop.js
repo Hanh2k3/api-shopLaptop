@@ -183,9 +183,16 @@ const getCommendLaptops = async (req, res) => {
            if( brand_id == item.brand_id || check || checkPrice) return true
            else return false
         })
+
+        const resPonse = {
+            count: data.length, 
+            rows: data
+           
+        }
+
         return res.status(200).json({ 
-            message: data.count == 0 ?'not found' : 'got list laptop',
-            data: data.count == 0? null : data,
+            message: data.count == 0 ?'not found' : 'got list laptop commend',
+            data: data.count == 0? null : resPonse,
             status: data.count == 0? 0 : 1,
         })
     } catch (error) {
