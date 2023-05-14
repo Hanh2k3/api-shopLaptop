@@ -130,6 +130,50 @@ export const getListLaptops = ({page, limit, name, price, ...query}) => new Prom
     }
 })
 
+export const getAllLaptops =  () => new Promise(async  (resolve, reject) => {
+    try {  
+        const laptops = await db.Laptop.findAndCountAll({
+            include:[
+                {
+                    model: db.DetailLaptop,
+                    foreignKey: 'detail_id', 
+                    attributes: {
+                        exclude: ['', 'createdAt', 'updatedAt']
+                    }
+                },
+                {
+                    model: db.Brand,
+                    foreignKey: 'brand_id', 
+                    attributes: {
+                        exclude: ['id', 'createdAt', 'updatedAt', 'status']
+                    }
+                }
+            ],
+           raw: true, 
+           nest: true
+        })
+   
+        for (let i = 0; i < laptops.rows.length; i++) {
+            // get category name
+            const laptop_id = laptops.rows[i].id
+            const { categories_id } = await categoryLaptop.getListCategoryId(laptop_id)
+            const list_id = categories_id.map(category => category.category_id)
+            const { list_categories } = await category.getListCategory(list_id)
+            const categories_name = list_categories.map(category => category.category_name)
+            laptops.rows[i].category = categories_name
+            // get image 
+            const listImages = await image.getListImages(laptop_id)
+            laptops.rows[i].images = listImages.images
+        }    
+        return  resolve({
+                laptops : laptops
+        })
+    } catch (error) {
+        reject(error)
+    }
+
+})
+
 export const getCategoryLaptops = (id) => new Promise( async(resolve, reject) => {
     try {
         const sql = `SELECT laptops.id FROM categories INNER JOIN categorylaptops on categories.id = categorylaptops.category_id

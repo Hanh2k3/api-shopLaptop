@@ -147,7 +147,6 @@ const getCategoryLaptops = async (req, res) => {
 const getBrandLaptops = async (req, res) => {
     try {
         const id = req.params.id 
-        await laptopService.getBrandLaptops(+id)
         const { laptops } = await laptopService.getBrandLaptops(+id)
         return res.status(200).json({ 
             message: laptops.count == 0 ?'not found' : 'got list laptop',
@@ -160,6 +159,42 @@ const getBrandLaptops = async (req, res) => {
         
     }
 }
+
+const getCommendLaptops = async (req, res) => {
+    try {
+        const id = req.params.id 
+        const { laptop } = await laptopService.getLaptop(+id)
+        const brand_id = laptop.brand_id
+        const categories = laptop.categories 
+        const price = laptop.price
+        const { laptops } = await  laptopService.getAllLaptops()
+        const listLaptops = laptops.rows  
+        
+        const data = listLaptops.filter(item => {
+           var check = false 
+            for(let i=0 ; i<categories.length ; i++) {
+                for(let j=0 ; j<item.categories; j++) {
+                    if(categories[i] == item.categories[j]) check = true
+                 }
+                 if(check) break
+            }
+           var checkPrice = false ; 
+           if (item.price >= price + 30000000 || item.price <= price - 30000000) checkPrice = true  
+           if( brand_id == item.brand_id || check || checkPrice) return true
+           else return false
+        })
+        return res.status(200).json({ 
+            message: data.count == 0 ?'not found' : 'got list laptop',
+            data: data.count == 0? null : data,
+            status: data.count == 0? 0 : 1,
+        })
+    } catch (error) {
+        handleError.internalServerError(res, error)
+        
+    }
+}
+
+
 module.exports = {
     create,
     updateLaptop,
@@ -167,5 +202,7 @@ module.exports = {
     getOne,
     getListLaptops,
     getCategoryLaptops,
-    getBrandLaptops
+    getBrandLaptops, 
+    getCommendLaptops
+
 }
