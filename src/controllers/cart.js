@@ -6,6 +6,8 @@ const insertCart = async (req, res) => {
     try {
         // check is exit 
 
+        console.log("okee")
+
         const user_id = req.user.user.id 
         const { laptop_id } = req.body
         const { qty } = req.body
@@ -13,11 +15,13 @@ const insertCart = async (req, res) => {
         if(isExit.isExit) {
             return res.status(201).json({
                 status: 0,
-                message: 'Laptop is exit in cart'
+                message: 'Laptop is exit in cart',
+                data: null 
             })
         }
 
         const rs = await cartService.add(user_id,laptop_id,qty)  
+        
       
         return res.status(200).json(rs)      
     } catch (error) {

@@ -28,7 +28,7 @@ const insertOrder = async (req, res) => {
             user_id: user_id,
             shipping_id: shipping_id,
             payment_id: payment,
-            status: 1,
+            status: 0,
             total_product: total_product,
             total: total
         }
@@ -47,7 +47,8 @@ const insertOrder = async (req, res) => {
         
         return res.status(200).json({
             status: 1,
-            message: "Order successfully"
+            message: "Order successfully",
+            data: null 
         })      
     } catch (error) {
         handleError.internalServerError(res, error)  

@@ -24,7 +24,8 @@ export const add = (user_id, laptop_id, qty) => new Promise( async(resolve,rejec
         const cart  =  await db.Cart.create({user_id, laptop_id, qty})
         resolve({
             status: 1,
-            message: "Add product to cart success"
+            message: "Add product to cart success",
+            data: null 
         })
     } catch (error) {
         reject(error)

@@ -13,5 +13,8 @@ router.route('/')
       .get(shipping.listShipping)
       .post(shipping.insertShipping)
 
+router.route('default')
+      .get(shipping.getShippingDefault)
+
 
 module.exports = router

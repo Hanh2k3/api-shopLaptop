@@ -70,3 +70,4 @@ export const updateAddress = (user_id, inforShipping_id) => new Promise( async (
         reject(error)
     }
 })
+

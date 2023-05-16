@@ -87,10 +87,30 @@ const insertAddress = async (req, res) => {
     }
 }
 
+const getAddressDefault = async (req, res, next) => {
+    try {
+
+        
+        const user_id = req.user.user.id
+        console.log("true road")
+        const  data  = await inforShippingService.getDefaultShipping(user_id)
+        console.log(data)
+        return res.status(200).json({
+            status: data.length != 0 ? 1 : 0,
+            message: data.length != 0 ?'Get all address' : "no address default ",
+            data: data 
+        })
+    } catch (error) {
+        handleError.internalServerError(res, error)
+        
+    }
+}
+
 module.exports = {
     getAllUsers,
     getUser,
     getAllAddress,
     updateAddress, 
-    insertAddress 
+    insertAddress,
+    getAddressDefault
 }

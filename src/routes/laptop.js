@@ -14,6 +14,8 @@ router.route('/:id').get(laptopController.getOne)
 router.route('/category/:id').get(laptopController.getCategoryLaptops)
 router.route('/brand/:id').get(laptopController.getBrandLaptops)
 router.route('/commend/:id').get(laptopController.getCommendLaptops)
+router.route('/search/search').get(laptopController.getSearchLaptops)
+
  
 
 // PRIVATE ROUTE

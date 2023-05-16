@@ -30,7 +30,33 @@ const insertShipping = async (req, res) => {
     }
 }
 
+const getShippingDefault = async (req, res) => {
+    try {
+        const user_id = + req.user.user.id
+
+        try {
+            const litUser = await  useService.getAllUser()
+            return res.status(200).json(litUser.user)
+        
+        } catch (error) {
+            handleError.internalServerError(res, error)
+            
+        }
+
+     
+    
+        return res.status(200).json({
+            status : 1,
+            message : 'Success',
+            data: null 
+        })
+    } catch (error) {
+        handleError.internalServerError(res, error)
+    }
+}
+
 module.exports = {
     listShipping,
-    insertShipping
+    insertShipping,
+    getShippingDefault
 }

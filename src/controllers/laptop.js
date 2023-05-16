@@ -201,6 +201,36 @@ const getCommendLaptops = async (req, res) => {
     }
 }
 
+const getSearchLaptops = async (req, res) => {
+    try {
+        console.log("true")
+        const { laptops } = await laptopService.getAllLaptops() 
+        console.log(laptops.rows)
+        
+        const keySearch = req.query.keySearch
+
+        const data = laptops.rows.filter(item => {
+            if (item.laptop_name.toLowerCase().includes(keySearch.toLowerCase())) return true 
+            if(item.price == +keySearch) return true 
+            if(item.Brand.brand_name.includes(keySearch)) return true 
+            for(let i=0; i<item.category.length; i++) {
+                if(item.category[i].includes(keySearch)) return true
+            }
+            return false 
+        })
+        return res.status(200).json({
+            message: data.length == 0 ?'not found' : 'got list laptop commend',
+            data: data.length == 0? null : data,
+            status: data.length == 0? 0 : 1,
+        })
+
+ 
+    } catch (error) {
+        handleError.internalServerError(res, error)
+        
+    }
+}
+
 
 module.exports = {
     create,
@@ -210,6 +240,7 @@ module.exports = {
     getListLaptops,
     getCategoryLaptops,
     getBrandLaptops, 
-    getCommendLaptops
+    getCommendLaptops,
+    getSearchLaptops
 
 }

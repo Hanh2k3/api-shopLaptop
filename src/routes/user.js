@@ -14,6 +14,9 @@ router.get('/', user.getUser)
 router.route('/address')
       .get(user.getAllAddress)
       .post(user.insertAddress)
+
+router.route('/address/default')
+      .get(user.getAddressDefault)
       
 
 router.route('/address/:id')
